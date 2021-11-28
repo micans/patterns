@@ -5,12 +5,15 @@
 % Kees van der Laan, Circle Inversions; pp.9–65. http://tug.org .
 
 % The main functions have been prefixed kvdl:
-%    kvdl_li   (line inversion)
-%    kvdl_lsi  (line segment inversion)
+%    kvdl_li   (line inversion, (0,0,1) based)
+%    kvdl_lsi  (line segment inversion, (0,0,1) based)
+%    kvdl_pqpi (generalised point inversion)
+%    kvdl_pqci (generalised circle inversion)
 % Some changes were made, in particular to naming and small helper functions
 % (amalgamated with some of my own), the logic for arc direction in kvdl_lsi,
-% and a decision to base everything on the unit circle centered at 0,0.  More
-% general code can be based on these using gsave/grestore.
+% and a decision to base line inversions on the unit circle centered at 0,0 -
+% for now. More general code can be based on these using gsave/grestore.
+% I expect more usage for generalised circle inversions, hence the divergence.
 
 
         % point inversion
@@ -149,5 +152,58 @@
    end
 } def
 /kvdl_lsi load 0 20 dict put
+
+
+        % invert point (generalised, with inversion circle parameters)
+/kvdl_pqpi
+% Px, Py:    point to be inverted
+% Ix, Iy, r: centre and radius of the inversion circle
+%==>
+% px, py:    inverted point
+{  0 begin
+   /r exch def  /Iy exch def  /Ix exch def   %collect values from the stack
+   /Py exch def /Px exch def                 %LIFO in the (local) dictionary
+   /Px Px Ix sub def /Py Py Iy sub def       %shift origin to centre of circle I
+   /factor r Px Py pmagn div dup mul def
+   Ix factor Px mul add
+   Iy factor Py mul add
+   end
+} def
+/kvdl_pqpi load 0 10 dict put
+
+
+        % inversion of circle
+/kvdl_pqci
+% Nx, Ny, R: centre and radius of the to be inverted circle
+% Ix, Iy, r: centre and radius of the inversion circle
+%==>
+% xi,yi, ri: centre and radius of the inverted circle
+{ 0 begin
+  /r exch def /y exch def /x exch def
+  /R exch def /Y exch def /X exch def
+  /Xmx X x sub def
+  /Ymy Y y sub def
+  % diametrical boundary points: intersections of the line I--N with the to be % inverted circle
+  /phi Ymy Xmx atan def
+
+  phi cos R mul Xmx add
+  phi sin R mul Ymy add
+  0 0 r kvdl_pqpi
+  /yi exch def /xi exch def
+
+  Xmx phi cos R mul sub
+  Ymy phi sin R mul sub
+  0 0 r kvdl_pqpi
+  /py exch def /px exch def
+
+  /yi py yi add .5 mul def
+  /xi px xi add .5 mul def
+  /ri px xi sub py yi sub pmagn def
+  /xi xi x add def /yi yi y add def % translate back
+
+  xi yi ri
+  end
+} def
+/kvdl_pqci load 0 30 dict put
 
 
