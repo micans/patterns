@@ -1,16 +1,16 @@
 %!
 
-% This is based on Kees van der Laan's code for circle inversion:
-% 230 TUGboat, Volume 31 (2010), No. 3 MAPS 40 (2009)
-% Kees van der Laan, Circle Inversions; pp.9–65.
-% http://tug.org
+% This is a largely verbatim copy of Kees van der Laan's code for circle
+% inversion: 230 TUGboat, Volume 31 (2010), No. 3 MAPS 40 (2009)
+% Kees van der Laan, Circle Inversions; pp.9–65. http://tug.org .
 
-% The ones that matter have been prefixed kvdl:
+% The main functions have been prefixed kvdl:
 %    kvdl_li   (line inversion)
 %    kvdl_lsi  (line segment inversion)
-% Some changes were made, in particular the logic for arc direction,
-% and a decision to base everything on the unit circle centered at 0,0.
-% More general code can be based on these using gsave/grestore.
+% Some changes were made, in particular to naming and small helper functions
+% (amalgamated with some of my own), the logic for arc direction in kvdl_lsi,
+% and a decision to base everything on the unit circle centered at 0,0.  More
+% general code can be based on these using gsave/grestore.
 
 
         % point inversion
