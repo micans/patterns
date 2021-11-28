@@ -8,7 +8,7 @@ use warnings;
 use strict;
 
 while (<>) {
-  if (/\((.*\.inc)\)\s*run/) {
+  if (/^\s*\((.*\.inc)\)\s*run/) {
      my $file = $1;
      -f $file || exit "no file $file";
      my $filename = $file;
