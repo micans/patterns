@@ -1,0 +1,266 @@
+%!PS-3.0
+
+%%BoundingBox: 150 210 445 635
+
+28.3464567 dup scale
+
+/height 29.7039 def
+/width 20.9903 def
+width 0.5 mul height 0.5 mul translate
+
+
+0.5 0.5 scale
+
+
+/depth  1 def
+/right  1 def
+/left  -1 def
+
+
+/mink_displace {                        % on stack: depth
+   3 dict begin
+   /mydepth exch def
+   /x 1 def
+   /y 0 def
+   mydepth {
+      x 2 mul y -1 mul add
+      x y 2 mul add
+      /y exch def
+      /x exch def
+   } repeat
+   x y
+   end
+} def
+
+
+
+newpath
+-10 -14.5  moveto
+20 0 rlineto
+0 29 rlineto
+-20 0 rlineto
+closepath
+
+gsave
+0.05 setlinewidth
+0 setgray stroke
+grestore
+
+clip
+
+
+
+/topunit 0.5 def
+% /mink_scale depth 1 1 mink_displace 2 exp exch 2 exp add sqrt def
+
+
+depth mink_displace
+/dx exch def                                    % fixme; reverse order
+/dy exch def                                    % fixme: reverse order
+/rx dy dx add  def
+/ry dy dx -1 mul add def
+
+/mink_scale rx 2 exp ry 2 exp add sqrt def
+
+
+/botunit topunit mink_scale div def
+
+
+/mink_close {
+   /thedepth exch def
+   gsave
+   translate
+   newpath
+   /mycol exch def
+   0 0 moveto
+   [right thedepth] [right thedepth] [right thedepth] [right thedepth]
+   {  count 0 eq { exit } if
+      aload  pop
+      /d     exch def
+      /where exch def
+        d 0 gt {
+           where right eq {
+              [right d -1 add] [right d -1 add] [left d -1 add]
+           } {
+              [left d -1 add] [right d -1 add] [left d -1 add]
+           } ifelse
+        } {
+           0 1 lineto
+           0 1 translate
+           90 where mul rotate
+        } ifelse
+   } loop
+   % 0.2 setlinewidth
+   mycol aload pop setrgbcolor
+   fill
+   grestore
+} def
+ 
+
+/mink_curve {
+   gsave
+   translate
+   newpath
+   0 0 moveto
+24 {  [right depth] [left depth]
+      {  count 0 eq { exit } if
+      aload  pop
+      /d     exch def
+      /where exch def
+        d 0 gt {
+           where right eq {
+              [right d -1 add] [right d -1 add] [left d -1 add]
+           } {
+              [left d -1 add] [right d -1 add] [left d -1 add]
+           } ifelse
+        } {
+           0 1 lineto
+           0 1 translate
+           90 where mul rotate
+        } ifelse
+      } loop
+   } repeat
+   % 0.2 setlinewidth
+   stroke
+   grestore
+} def
+
+
+
+
+
+0.02 botunit div setlinewidth
+
+botunit 0.40 mul dup scale
+
+
+
+/topunit mink_scale 1.0  mul def
+
+
+topunit -11 mul topunit -20 mul translate
+0  0  translate
+
+
+%-3 1 70
+%   {
+%/o exch def
+%/r o 3 idiv -1 mul def
+%dx o mul rx  r mul add     dy o mul ry  r mul add   mink_curve
+%   } for
+
+
+gsave
+70 -30 translate
+2.4 dup scale
+% [1 0 0]  0  0  depth mink_close
+
+
+
+/white  [ 1 1 1 ] def
+/green  [ 0 1 0 ] def
+
+
+/recursediff -4 def
+
+               % depth Cx Cy greyscale
+/mink_shrink
+   {  14 dict begin
+      /recurse exch def
+      /grey exch def
+      /Cy exch def
+      /Cx exch def
+
+      /depth2 exch def
+      depth2 mink_displace
+      /Ey exch def
+      /Ex exch def
+
+      % [grey 0.60 mul dup dup] Cx Ey add Cy Ex add depth2 mink_close
+      [0.09  depth2 mul dup dup] Cx Ey add Cy Ex add depth2 mink_close
+         % mq number 2
+
+recurse 0 gt {
+
+      /depth3 depth2 -1 add def
+      depth3 mink_displace
+      /Fy exch def
+      /Fx exch def
+
+      /thecol [0.12 depth3 mul dup dup] def
+         % mq number 3
+
+                /tx Cx Ey Fy add add def
+                /ty Cy Ex Fx add add def
+         thecol tx ty depth3 mink_close
+                depth3 tx Fy -1 mul add ty Fx -1 mul add grey 0.97 mul recurse recursediff add mink_shrink
+
+                /tx Cx Fy add def
+                /ty Cy Fx add def
+           thecol tx ty depth3 mink_close
+                depth3 tx Fy -1 mul add ty Fx -1 mul add grey 0.97 mul recurse recursediff add mink_shrink
+
+ 
+                /tx Cx Ey 2 mul Fy add add def
+                /ty Cy Ex 2 mul Fx add add def
+          thecol tx ty depth3 mink_close
+                depth3 tx Fy -1 mul add ty Fx -1 mul add grey 0.97 mul recurse recursediff add mink_shrink
+ 
+ 
+                /tx Cx Ey Ex -1 mul add Fy add add def
+                /ty Cy Ex Ey  1 mul add Fx add add def
+          thecol tx ty depth3 mink_close
+                depth3 tx Fy -1 mul add ty Fx -1 mul add grey 0.97 mul recurse recursediff add mink_shrink
+ 
+ 
+                /tx Cx Ey Ex  1 mul add Fy add add def
+                /ty Cy Ex Ey -1 mul add Fx add add def
+          thecol tx ty depth3 mink_close
+                depth3 tx Fy -1 mul add ty Fx -1 mul add grey 0.97 mul recurse recursediff add mink_shrink
+
+} if
+      end
+   } def
+
+
+4 {
+   /depth 0 def
+   /Px 0 def
+   /Py 0 def
+   [0 0 0]  Px  Py  depth mink_close        %
+   1 1 7 {
+      /depth exch def
+      depth mink_displace
+      /Dy exch def
+      /Dx exch def
+      /Cx Px Dy -1 mul add def
+      /Cy Py Dx -1 mul add def
+
+      [0.15 0.12 depth mul add dup dup] Cx Cy depth mink_close
+         % mq number 1
+
+      depth 2 ge {
+         depth -1 add
+         Cx
+         Cy
+         0.3 0.08 depth mul add
+         depth -1 add
+         % depth 5 ge { 4 } if
+         % depth 5 lt { depth -1 add } if
+                mink_shrink
+      } if
+
+      /Px Cx def
+      /Py Cy def
+   } for
+
+   -90 rotate
+   -1 -2 translate
+
+} repeat
+
+
+
+grestore
+
+
